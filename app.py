@@ -9,7 +9,7 @@ from utils.helpers import login_user, register_user
 from utils.styles import SHARED_CSS
 
 st.set_page_config(
-    page_title="SmartRecommend",
+    page_title="SMART RECOMMEND",
     page_icon="🛍️",
     layout="wide",
     initial_sidebar_state="expanded"
