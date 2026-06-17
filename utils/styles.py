@@ -14,7 +14,7 @@ SHARED_CSS = """
 [data-testid="stSidebar"] .sidebar-logo { color: white !important; }
 
 /* Hide default streamlit header */
-#MainMenu, footer, header { visibility: hidden; }
+#MainMenu, footer { visibility: hidden; }
 
 /* ── Top navbar ── */
 .top-nav {
