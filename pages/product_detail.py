@@ -128,7 +128,6 @@ def render():
             if st.button("🛒  Add to Wishlist", use_container_width=True, type="primary"):
                 if uid:
                     added = toggle_wishlist(uid, pid)
-                    track_activity(uid, pid, "wishlist")
                     st.success("Added to wishlist! ❤️" if added else "Removed from wishlist")
                     st.rerun()
                 else:
