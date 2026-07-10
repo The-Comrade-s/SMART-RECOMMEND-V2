@@ -25,7 +25,10 @@ DB_PATH = _get_db_path()
 
 
 def get_connection():
-    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+    # timeout=15 makes SQLite retry for up to 15s instead of raising
+    # "database is locked" immediately if another connection briefly
+    # holds a write lock (belt-and-braces alongside the toggle_wishlist fix).
+    conn = sqlite3.connect(DB_PATH, check_same_thread=False, timeout=15)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL")   # Better concurrent access
     conn.execute("PRAGMA synchronous=NORMAL")
@@ -156,11 +159,10 @@ def seed_products():
         ("Asus ROG Zephyrus G14", "Laptops", "Gaming", 980000, 1100000,
          "AMD Ryzen 9, 16GB RAM, 1TB SSD, NVIDIA RTX 4060, 165Hz display",
          "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400", 4.6, 76,
-         "asus,gaming,rog,amd,laptop", 1, 0, 1, 0),
-        # Electronics
-        ("Sony WH-1000XM5 Headphones", "Electronics", "Audio", 450000, 520000,
-         "Industry-leading noise cancellation, 30-hour battery, Crystal clear hands-free calling",
-         "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400", 4.9, 203,
+         "asus,rog,laptop,gaming,ryzen", 1, 1, 0, 0),
+        ("Sony WH-1000XM5 Headphones", "Electronics", "Audio", 250000, 300000,
+         "Industry-leading noise cancellation, 30-hour battery, multipoint connection",
+         "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=400", 4.7, 267,
          "sony,headphones,noise-cancellation,wireless,audio", 1, 1, 1, 0),
         ("Apple AirPods Pro 2nd Gen", "Electronics", "Audio", 320000, 380000,
          "Active noise cancellation, Adaptive Audio, Personalized Spatial Audio, MagSafe charging",
