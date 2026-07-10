@@ -98,6 +98,11 @@ def track_activity(user_id: int, product_id: int, action: str):
 
 
 def toggle_wishlist(user_id: int, product_id: int):
+    # NOTE: everything happens on ONE connection/transaction here.
+    # Do not call track_activity() (which opens its own connection) while
+    # this connection still has an uncommitted write pending - that causes
+    # a "database is locked" OperationalError since SQLite only allows one
+    # writer at a time.
     conn = get_connection()
     c = conn.cursor()
     c.execute("SELECT wishlist_id FROM wishlist WHERE user_id=? AND product_id=?",
@@ -110,7 +115,10 @@ def toggle_wishlist(user_id: int, product_id: int):
     else:
         c.execute("INSERT INTO wishlist (user_id, product_id) VALUES (?,?)",
                   (user_id, product_id))
-        track_activity(user_id, product_id, "wishlist")
+        c.execute(
+            "INSERT INTO user_activity (user_id, product_id, action) VALUES (?,?,?)",
+            (user_id, product_id, "wishlist")
+        )
         added = True
     conn.commit()
     conn.close()
